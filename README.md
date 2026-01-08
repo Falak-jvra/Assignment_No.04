@@ -1,1 +1,92 @@
-# Assignment_No.04
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+const int PRODUCTS = 5;
+const int DAYS = 7;
+
+void inputSales(vector<vector<double>>& sales);
+vector<double> calculateRevenue(const vector<vector<double>>& sales);
+void findMaxProduct(const vector<double>& totalRevenue);
+void findBestDay(const vector<vector<double>>& sales);
+
+int main() {
+    vector<vector<double>> salesData(PRODUCTS, vector<double>(DAYS));
+    vector<double> weeklyRevenue;
+
+    inputSales(salesData);
+    
+    weeklyRevenue = calculateRevenue(salesData);
+
+    cout << "\n--- Weekly Analysis ---\n";
+    
+    findMaxProduct(weeklyRevenue);
+    findBestDay(salesData);
+
+    return 0;
+}
+
+void inputSales(vector<vector<double>>& sales) {
+    cout << "Enter sales data (" << PRODUCTS << " products over " << DAYS << " days):" << endl;
+    for (int i = 0; i < PRODUCTS; ++i) {
+        cout << "Enter daily sales for Product " << (i + 1) << ": ";
+        for (int j = 0; j < DAYS; ++j) {
+            cin >> sales[i][j];
+        }
+    }
+}
+
+vector<double> calculateRevenue(const vector<vector<double>>& sales) {
+    vector<double> revenue(PRODUCTS, 0.0);
+    
+    cout << "\n--- Weekly Sales per Product ---" << endl;
+    for (int i = 0; i < PRODUCTS; ++i) {
+        double sum = 0;
+        for (int j = 0; j < DAYS; ++j) {
+            sum += sales[i][j];
+        }
+        revenue[i] = sum;
+        cout << "Product " << (i + 1) << " Total: $" << fixed << setprecision(2) << sum << endl;
+    }
+    return revenue;
+}
+
+void findMaxProduct(const vector<double>& totalRevenue) {
+    int maxIndex = 0;
+    double maxVal = totalRevenue[0];
+
+    for (int i = 1; i < PRODUCTS; ++i) {
+        if (totalRevenue[i] > maxVal) {
+            maxVal = totalRevenue[i];
+            maxIndex = i;
+        }
+    }
+    cout << "Top Performing Product: Product " << (maxIndex + 1) 
+         << " ($" << maxVal << ")" << endl;
+}
+
+void findBestDay(const vector<vector<double>>& sales) {
+    int bestDayIndex = 0;
+    double maxDaySales = 0;
+
+    for (int i = 0; i < PRODUCTS; ++i) {
+        maxDaySales += sales[i][0];
+    }
+
+    for (int j = 1; j < DAYS; ++j) {
+        double currentDayTotal = 0;
+        for (int i = 0; i < PRODUCTS; ++i) {
+            currentDayTotal += sales[i][j];
+        }
+
+        if (currentDayTotal > maxDaySales) {
+            maxDaySales = currentDayTotal;
+            bestDayIndex = j;
+        }
+    }
+
+    cout << "Best Sales Day: Day " << (bestDayIndex + 1) 
+         << " (Total: $" << maxDaySales << ")" << endl;
+}
